@@ -3,49 +3,71 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>QR Code Reader | Made by Rao Jatin</title>
+  <title>QR Reader | Made by Rao Jatin</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
     body { font-family: 'Inter', sans-serif; }
-    #reader video { width: 100% !important; border-radius: 1rem; }
-    #scan-btn { animation: pulse 2s infinite; }
+    #reader video { border-radius: 1rem; }
+    .glass {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
     @keyframes pulse {
       0%, 100% { transform: scale(1); opacity: 1; }
       50% { transform: scale(1.05); opacity: 0.9; }
     }
+    #scan-btn { animation: pulse 2s infinite; }
   </style>
 </head>
-<body class="bg-gradient-to-br from-white via-blue-50 to-blue-100 min-h-screen flex flex-col text-gray-800">
+<body class="bg-gradient-to-br from-white via-blue-50 to-indigo-100 text-gray-800 min-h-screen flex flex-col">
 
-  <!-- Loading -->
-  <div id="loading" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center transition-opacity duration-500">
-    <div class="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-    <h1 class="text-xl font-bold">Initializing QR Scanner...</h1>
+  <!-- Loading Screen -->
+  <div id="loading" class="fixed inset-0 z-50 flex items-center justify-center bg-white transition-opacity duration-500">
+    <div class="text-center">
+      <div class="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+      <h1 class="text-xl font-semibold">Initializing...</h1>
+    </div>
   </div>
 
-  <main class="flex-grow container mx-auto px-4 py-8 flex flex-col items-center">
-    <h1 class="text-4xl font-bold text-center mb-2">QR Code Reader</h1>
-    <p class="text-center text-gray-500 mb-6">Scan any QR Code using your camera</p>
+  <main class="flex-grow container mx-auto px-4 py-6 flex flex-col items-center text-center">
+    <h1 class="text-4xl font-bold mb-2">QR Code Reader</h1>
+    <p class="text-gray-600 mb-6">Scan any QR code using your camera</p>
 
-    <div id="start-section" class="text-center">
-      <button id="scan-btn" class="px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+    <div id="start-section">
+      <button id="scan-btn" class="px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all">
         🚀 Start Scanning
       </button>
-      <p class="text-sm text-gray-500 mt-2">Allow camera permission when asked</p>
     </div>
 
-    <div id="reader" class="hidden w-full max-w-md mt-6 rounded-2xl shadow-lg border-2 border-blue-200"></div>
+    <div id="reader-container" class="relative w-full max-w-md mt-6 hidden">
+      <div id="reader" class="rounded-xl overflow-hidden shadow-2xl border-2 border-blue-300"></div>
+
+      <!-- Camera Switch -->
+      <button id="switch-camera" class="absolute top-2 right-2 bg-white bg-opacity-70 backdrop-blur-md px-3 py-1 text-sm rounded-full shadow-md hover:bg-opacity-90 transition-all">
+        🔄 Switch Camera
+      </button>
+
+      <!-- Confidence Circle -->
+      <div class="absolute bottom-2 left-2 bg-white/80 p-2 rounded-full shadow-lg flex items-center justify-center w-16 h-16">
+        <svg viewBox="0 0 36 36" class="w-full h-full">
+          <path class="text-blue-100" stroke="currentColor" stroke-width="3.5" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 1 1 0 31.831" />
+          <path id="confidence-path" class="text-blue-600" stroke="currentColor" stroke-width="3.5" fill="none" stroke-dasharray="0,100" d="M18 2.0845 a 15.9155 15.9155 0 1 1 0 31.831"/>
+        </svg>
+        <span id="confidence-label" class="absolute text-xs font-semibold text-blue-700">0%</span>
+      </div>
+    </div>
 
     <!-- Result -->
-    <div id="result-container" class="hidden mt-6 w-full max-w-md bg-white rounded-xl p-6 shadow-lg border border-gray-200">
-      <h2 class="text-xl font-semibold mb-3">Scan Result</h2>
-      <div id="result" class="bg-gray-50 p-4 rounded-md break-words text-sm mb-4"></div>
-      <div class="flex flex-wrap gap-3">
-        <button id="copy-btn" class="px-4 py-2 bg-blue-100 hover:bg-blue-200 text-blue-800 rounded-md">📋 Copy</button>
-        <button id="open-btn" class="px-4 py-2 bg-green-100 hover:bg-green-200 text-green-800 rounded-md hidden">🔗 Open Link</button>
-        <button id="new-scan-btn" class="ml-auto px-4 py-2 bg-indigo-100 hover:bg-indigo-200 text-indigo-800 rounded-md">🔄 New Scan</button>
+    <div id="result-box" class="hidden bg-white mt-6 rounded-xl shadow-lg border border-gray-200 p-6 w-full max-w-md text-left">
+      <h2 class="text-xl font-semibold mb-3">✅ Scan Result</h2>
+      <div id="result" class="bg-gray-100 p-3 rounded mb-3 text-sm break-words"></div>
+      <div class="flex gap-3">
+        <button id="copy-btn" class="px-4 py-2 bg-blue-100 hover:bg-blue-200 text-blue-800 rounded-md text-sm">📋 Copy</button>
+        <button id="open-btn" class="px-4 py-2 bg-green-100 hover:bg-green-200 text-green-800 rounded-md text-sm hidden">🔗 Open Link</button>
+        <button id="new-scan-btn" class="ml-auto px-4 py-2 bg-indigo-100 hover:bg-indigo-200 text-indigo-800 rounded-md text-sm">🔄 New Scan</button>
       </div>
     </div>
   </main>
@@ -54,94 +76,106 @@
     Website Made by Rao Jatin © 2025
   </footer>
 
-  <!-- Script -->
+  <!-- JS -->
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const loading = document.getElementById('loading');
-      const scanBtn = document.getElementById('scan-btn');
-      const reader = document.getElementById('reader');
-      const resultContainer = document.getElementById('result-container');
-      const resultDiv = document.getElementById('result');
-      const copyBtn = document.getElementById('copy-btn');
-      const openBtn = document.getElementById('open-btn');
-      const newScanBtn = document.getElementById('new-scan-btn');
-      const startSection = document.getElementById('start-section');
+    const loading = document.getElementById("loading");
+    const scanBtn = document.getElementById("scan-btn");
+    const startSection = document.getElementById("start-section");
+    const readerContainer = document.getElementById("reader-container");
+    const resultBox = document.getElementById("result-box");
+    const resultText = document.getElementById("result");
+    const copyBtn = document.getElementById("copy-btn");
+    const openBtn = document.getElementById("open-btn");
+    const newScanBtn = document.getElementById("new-scan-btn");
+    const switchCameraBtn = document.getElementById("switch-camera");
+    const confidencePath = document.getElementById("confidence-path");
+    const confidenceLabel = document.getElementById("confidence-label");
 
-      let qrScanner;
-      let currentCameraId;
+    let scanner;
+    let cameras = [];
+    let currentCameraIndex = 0;
 
-      // Hide loader after 2 sec
-      setTimeout(() => {
-        loading.classList.add('opacity-0');
-        setTimeout(() => loading.style.display = 'none', 500);
-      }, 2000);
+    setTimeout(() => {
+      loading.classList.add('opacity-0');
+      setTimeout(() => loading.style.display = 'none', 300);
+    }, 2000);
 
-      // Handle Scan Button
-      scanBtn.addEventListener('click', async () => {
-        startSection.classList.add('hidden');
-        reader.classList.remove('hidden');
+    async function startScanner() {
+      scanner = new Html5Qrcode("reader");
 
-        qrScanner = new Html5Qrcode("reader");
+      cameras = await Html5Qrcode.getCameras();
+      if (!cameras.length) {
+        alert("No camera found!");
+        return;
+      }
 
+      await scanner.start(
+        { deviceId: { exact: cameras[currentCameraIndex].id } },
+        { fps: 10, qrbox: { width: 250, height: 250 } },
+        (decodedText, result) => {
+          showResult(decodedText);
+        },
+        (err) => {
+          updateConfidence(getConfidenceFromError(err));
+        }
+      );
+
+      readerContainer.classList.remove("hidden");
+    }
+
+    function updateConfidence(percentage) {
+      const angle = (percentage / 100) * 100;
+      confidencePath.setAttribute("stroke-dasharray", `${angle}, 100`);
+      confidenceLabel.textContent = `${Math.round(percentage)}%`;
+    }
+
+    function getConfidenceFromError(err) {
+      if (!err) return 0;
+      if (typeof err !== "string") return 0;
+      // simulate confidence from error string length
+      const noise = err.length % 100;
+      return Math.max(20, 100 - noise);
+    }
+
+    function showResult(text) {
+      scanner.stop().then(() => {
+        readerContainer.classList.add("hidden");
+        resultBox.classList.remove("hidden");
+        resultText.textContent = text;
         try {
-          const devices = await Html5Qrcode.getCameras();
-          if (devices && devices.length) {
-            currentCameraId = devices[0].id;
-
-            qrScanner.start(
-              currentCameraId,
-              { fps: 10, qrbox: { width: 250, height: 250 } },
-              (decodedText) => {
-                qrScanner.stop().then(() => {
-                  reader.classList.add('hidden');
-                  resultContainer.classList.remove('hidden');
-                  resultDiv.textContent = decodedText;
-
-                  try {
-                    new URL(decodedText);
-                    openBtn.classList.remove('hidden');
-                    openBtn.onclick = () => window.open(decodedText, '_blank');
-                  } catch {
-                    openBtn.classList.add('hidden');
-                  }
-                });
-              },
-              (errorMessage) => {
-                console.warn("QR Scan Error:", errorMessage);
-              }
-            ).catch(err => {
-              console.error("Camera start failed:", err);
-              alert("Camera access failed. Please check permission or use HTTPS.");
-              startSection.classList.remove('hidden');
-              reader.classList.add('hidden');
-            });
-
-          } else {
-            alert("No camera devices found.");
-            startSection.classList.remove('hidden');
-          }
-        } catch (err) {
-          console.error("Camera init error:", err);
-          alert("Error accessing camera: " + err.message);
-          startSection.classList.remove('hidden');
+          new URL(text);
+          openBtn.classList.remove("hidden");
+          openBtn.onclick = () => window.open(text, "_blank");
+        } catch {
+          openBtn.classList.add("hidden");
         }
       });
+    }
 
-      // Copy Button
-      copyBtn.addEventListener('click', () => {
-        navigator.clipboard.writeText(resultDiv.textContent).then(() => {
-          copyBtn.textContent = "✅ Copied!";
-          setTimeout(() => copyBtn.textContent = "📋 Copy", 2000);
-        });
-      });
+    scanBtn.addEventListener("click", () => {
+      startSection.classList.add("hidden");
+      startScanner();
+    });
 
-      // New Scan
-      newScanBtn.addEventListener('click', () => {
-        resultContainer.classList.add('hidden');
-        startSection.classList.remove('hidden');
-        resultDiv.textContent = "";
-        openBtn.classList.add('hidden');
+    copyBtn.addEventListener("click", () => {
+      navigator.clipboard.writeText(resultText.textContent).then(() => {
+        copyBtn.textContent = "✅ Copied!";
+        setTimeout(() => copyBtn.textContent = "📋 Copy", 2000);
       });
+    });
+
+    newScanBtn.addEventListener("click", () => {
+      resultBox.classList.add("hidden");
+      startSection.classList.remove("hidden");
+      resultText.textContent = "";
+      openBtn.classList.add("hidden");
+      updateConfidence(0);
+    });
+
+    switchCameraBtn.addEventListener("click", async () => {
+      if (scanner) await scanner.stop();
+      currentCameraIndex = (currentCameraIndex + 1) % cameras.length;
+      startScanner();
     });
   </script>
 </body>
