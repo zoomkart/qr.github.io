@@ -27,6 +27,10 @@
                             800: '#075985',
                             900: '#0c4a6e',
                         },
+                        secondary: {
+                            500: '#f59e0b',
+                            600: '#d97706'
+                        },
                         dark: {
                             900: '#0f172a',
                             800: '#1e293b',
@@ -40,7 +44,7 @@
         }
     </script>
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <!-- Animate.css -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <!-- jsQR -->
@@ -53,6 +57,8 @@
         :root {
             --primary-500: #0ea5e9;
             --primary-600: #0284c7;
+            --secondary-500: #f59e0b;
+            --secondary-600: #d97706;
             --dark-800: #1e293b;
             --dark-900: #0f172a;
         }
@@ -61,6 +67,7 @@
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc;
             color: var(--dark-900);
+            font-weight: 500;
         }
         
         .card {
@@ -68,10 +75,11 @@
             border-radius: 12px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
         
         .card:hover {
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
             transform: translateY(-2px);
         }
         
@@ -79,18 +87,30 @@
             background-color: var(--primary-500);
             color: white;
             transition: all 0.3s ease;
+            font-weight: 600;
         }
         
         .btn-primary:hover {
             background-color: var(--primary-600);
             transform: translateY(-1px);
-            box-shadow: 0 4px 6px -1px rgba(14, 165, 233, 0.2), 0 2px 4px -1px rgba(14, 165, 233, 0.06);
+            box-shadow: 0 4px 6px -1px rgba(14, 165, 233, 0.3), 0 2px 4px -1px rgba(14, 165, 233, 0.1);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-500);
+            color: white;
+            font-weight: 600;
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--secondary-600);
         }
         
         .btn-outline {
             border: 1px solid var(--primary-500);
             color: var(--primary-500);
             transition: all 0.3s ease;
+            font-weight: 600;
         }
         
         .btn-outline:hover {
@@ -101,10 +121,12 @@
         .nav-tab {
             transition: all 0.3s ease;
             position: relative;
+            font-weight: 600;
         }
         
         .nav-tab.active {
             color: var(--primary-600);
+            background-color: white;
         }
         
         .nav-tab.active:after {
@@ -166,6 +188,7 @@
             color: #e2e8f0;
             border-radius: 8px;
             border-left: 4px solid var(--primary-500);
+            font-weight: 500;
         }
         
         .upload-area {
@@ -185,7 +208,7 @@
         
         .qr-preview {
             border: 12px solid white;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
         
         .pulse {
@@ -197,20 +220,41 @@
             70% { box-shadow: 0 0 0 10px rgba(14, 165, 233, 0); }
             100% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0); }
         }
+        
+        /* Gradient background for header */
+        .header-gradient {
+            background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-700) 100%);
+        }
+        
+        /* Colorful elements */
+        .colorful-bg {
+            background: linear-gradient(135deg, #f0f9ff 0%, #f8fafc 100%);
+        }
+        
+        h1, h2, h3, h4 {
+            font-weight: 700;
+        }
+        
+        .text-gradient {
+            background: linear-gradient(135deg, var(--primary-500) 0%, var(--secondary-500) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
     </style>
 </head>
-<body class="min-h-screen flex flex-col bg-gray-50">
+<body class="min-h-screen flex flex-col colorful-bg">
     <!-- Header -->
-    <header class="bg-white shadow-sm">
+    <header class="header-gradient shadow-sm text-white">
         <div class="container mx-auto px-4 py-6">
             <div class="flex justify-between items-center">
                 <div class="flex items-center">
-                    <div class="w-10 h-10 rounded-lg bg-primary-500 flex items-center justify-center mr-3">
-                        <i class="fas fa-qrcode text-white text-xl"></i>
+                    <div class="w-10 h-10 rounded-lg bg-white flex items-center justify-center mr-3">
+                        <i class="fas fa-qrcode text-primary-600 text-xl"></i>
                     </div>
-                    <h1 class="text-2xl font-bold text-dark-900">QR Genie</h1>
+                    <h1 class="text-2xl font-bold">QR <span class="text-gradient">Genie</span></h1>
                 </div>
-                <div class="hidden md:flex items-center space-x-1 bg-gray-100 rounded-full p-1">
+                <div class="hidden md:flex items-center space-x-1 bg-white/20 rounded-full p-1">
                     <button id="scan-tab" class="nav-tab px-4 py-2 rounded-full text-sm font-medium active">
                         <i class="fas fa-camera mr-2"></i>Scan QR
                     </button>
@@ -218,7 +262,7 @@
                         <i class="fas fa-bolt mr-2"></i>Generate QR
                     </button>
                 </div>
-                <button class="md:hidden text-primary-500">
+                <button class="md:hidden text-white">
                     <i class="fas fa-bars text-xl"></i>
                 </button>
             </div>
@@ -245,8 +289,8 @@
         <div id="scan-content" class="tab-content active">
             <div class="max-w-4xl mx-auto">
                 <div class="text-center mb-8">
-                    <h2 class="text-2xl font-bold text-dark-900 mb-2">QR Code Scanner</h2>
-                    <p class="text-gray-600">Scan QR codes using your camera or upload an image</p>
+                    <h2 class="text-3xl font-bold text-dark-900 mb-2">QR Code Scanner</h2>
+                    <p class="text-gray-600 font-medium">Scan QR codes using your camera or upload an image</p>
                 </div>
                 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -260,10 +304,10 @@
                         </div>
                         
                         <div id="video-container" class="aspect-square mb-4">
-                            <div class="w-full h-full flex items-center justify-center bg-dark-800 text-white">
+                            <div id="camera-placeholder" class="w-full h-full flex items-center justify-center bg-dark-800 text-white">
                                 <i class="fas fa-camera text-4xl opacity-30"></i>
                             </div>
-                            <video id="qr-video" class="w-full h-full object-cover hidden" playsinline></video>
+                            <video id="qr-video" class="w-full h-full object-cover" playsinline></video>
                             <canvas id="qr-canvas"></canvas>
                             <div id="scan-indicator" class="scan-indicator bg-gray-400"></div>
                         </div>
@@ -275,7 +319,7 @@
                             <button id="switch-camera" class="btn-outline px-4 py-2 rounded-lg text-sm font-medium flex items-center opacity-0 pointer-events-none">
                                 <i class="fas fa-sync-alt mr-2"></i>Switch Camera
                             </button>
-                            <button id="stop-scan" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium flex items-center opacity-0 pointer-events-none">
+                            <button id="stop-scan" class="btn-secondary px-4 py-2 rounded-lg text-sm font-medium flex items-center opacity-0 pointer-events-none">
                                 <i class="fas fa-stop mr-2"></i>Stop
                             </button>
                         </div>
@@ -339,8 +383,8 @@
         <div id="generate-content" class="tab-content">
             <div class="max-w-2xl mx-auto">
                 <div class="text-center mb-8">
-                    <h2 class="text-2xl font-bold text-dark-900 mb-2">QR Code Generator</h2>
-                    <p class="text-gray-600">Create QR codes for URLs, text, or any information</p>
+                    <h2 class="text-3xl font-bold text-dark-900 mb-2">QR Code Generator</h2>
+                    <p class="text-gray-600 font-medium">Create QR codes for URLs, text, or any information</p>
                 </div>
                 
                 <div class="card p-6">
@@ -353,13 +397,13 @@
                     
                     <div class="mb-4">
                         <label for="qr-content" class="block text-sm font-medium text-gray-700 mb-2">Content to encode</label>
-                        <textarea id="qr-content" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500" placeholder="Enter text, URL, or other data..."></textarea>
+                        <textarea id="qr-content" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 font-medium" placeholder="Enter text, URL, or other data..."></textarea>
                     </div>
                     
                     <div class="grid grid-cols-2 gap-4 mb-6">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Size</label>
-                            <select id="qr-size" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                            <select id="qr-size" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 font-medium">
                                 <option value="200">Small (200px)</option>
                                 <option value="300" selected>Medium (300px)</option>
                                 <option value="400">Large (400px)</option>
@@ -367,9 +411,10 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Color</label>
-                            <select id="qr-color" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                            <select id="qr-color" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 font-medium">
                                 <option value="#000000" selected>Black</option>
                                 <option value="#0ea5e9">Blue</option>
+                                <option value="#f59e0b">Amber</option>
                                 <option value="#10b981">Green</option>
                                 <option value="#ef4444">Red</option>
                                 <option value="#7c3aed">Purple</option>
@@ -398,7 +443,7 @@
                 </div>
                 
                 <div class="card p-6 mt-6">
-                    <div class="flex items-center mb-4">
+                    <div class="flex items-center mb-4"><div class="flex items-center mb-4">
                         <div class="w-10 h-10 rounded-lg bg-primary-100 flex items-center justify-center mr-3">
                             <i class="fas fa-lightbulb text-primary-600"></i>
                         </div>
@@ -408,15 +453,15 @@
                     <ul class="space-y-3">
                         <li class="flex items-start">
                             <i class="fas fa-check-circle text-primary-500 mt-1 mr-2"></i>
-                            <span class="text-gray-700">For URLs, include "https://" for best compatibility</span>
+                            <span class="text-gray-700 font-medium">For URLs, include "https://" for best compatibility</span>
                         </li>
                         <li class="flex items-start">
                             <i class="fas fa-check-circle text-primary-500 mt-1 mr-2"></i>
-                            <span class="text-gray-700">Simple QR codes scan faster than complex ones</span>
+                            <span class="text-gray-700 font-medium">Simple QR codes scan faster than complex ones</span>
                         </li>
                         <li class="flex items-start">
                             <i class="fas fa-check-circle text-primary-500 mt-1 mr-2"></i>
-                            <span class="text-gray-700">Test your QR code with multiple devices</span>
+                            <span class="text-gray-700 font-medium">Test your QR code with multiple devices</span>
                         </li>
                     </ul>
                 </div>
@@ -432,9 +477,9 @@
                     <div class="w-8 h-8 rounded-lg bg-primary-500 flex items-center justify-center mr-2">
                         <i class="fas fa-qrcode text-white text-sm"></i>
                     </div>
-                    <span class="text-sm text-gray-600">QR Genie - Your QR Code Solution</span>
+                    <span class="text-sm text-gray-600 font-medium">QR Genie - Your QR Code Solution</span>
                 </div>
-                <div class="text-sm text-gray-500">
+                <div class="text-sm text-gray-500 font-medium">
                     Made with <i class="fas fa-heart text-red-400"></i> by Rao Jatin © 2025
                 </div>
             </div>
@@ -469,6 +514,7 @@
 
         // QR Code Scanner
         const video = document.getElementById('qr-video');
+        const cameraPlaceholder = document.getElementById('camera-placeholder');
         const canvas = document.getElementById('qr-canvas');
         const canvasContext = canvas.getContext('2d');
         const scanResult = document.getElementById('scan-result');
@@ -503,6 +549,7 @@
                     }
                 });
                 video.srcObject = stream;
+                cameraPlaceholder.classList.add('hidden');
                 video.classList.remove('hidden');
                 video.play();
                 scanning = true;
@@ -526,6 +573,7 @@
             }
             scanning = false;
             video.classList.add('hidden');
+            cameraPlaceholder.classList.remove('hidden');
             startScanBtn.classList.remove('opacity-0', 'pointer-events-none');
             stopScanBtn.classList.add('opacity-0', 'pointer-events-none');
             switchCameraBtn.classList.add('opacity-0', 'pointer-events-none');
